@@ -36,13 +36,16 @@ print(f"iCalendar saved to {icalendar_path}")
 
 course_status_changes = []
 watch_urls = os.getenv("WATCH_URLS", "").split(",")
-for watch_url in watch_urls:
-    watch_url = watch_url.strip()
-    formation_name, is_open = adum_client.is_course_open(watch_url)
-    if formation_name is None:
-        print(f"Could not check course status for URL: {watch_url}")
-        continue
-    course_status_changes.append((formation_name, is_open))
+if not watch_urls or watch_urls == [""]:
+    print("No WATCH_URLS provided, skipping course status checks")
+else:
+    for watch_url in watch_urls:
+        watch_url = watch_url.strip()
+        formation_name, is_open = adum_client.is_course_open(watch_url)
+        if formation_name is None:
+            print(f"Could not check course status for URL: {watch_url}")
+            continue
+        course_status_changes.append((formation_name, is_open))
 
 new_status = {
     "status": status,
