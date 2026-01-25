@@ -253,3 +253,37 @@ class adum(requests.Session):
                     print(f"Could not convert session to iCal: {session}")
                     continue
         return cal
+
+    def get_course_hours(self):
+        """Fetches the total course hours from the ADUM platform.
+
+        Returns:
+            str: The total course hours text.
+        """
+        soup = bs(self.landing.text, "html.parser")
+        procedures = soup.find(id="zone_formations")
+        hours = procedures.find_next("span").text
+        regex = r"/^[^\d]*(\d+)/"
+        #Find first number in the string
+        match = re.search(r"(\d+)", hours)
+        if match:
+            return match.group(1)
+        return "0"
+
+    def is_course_open(self, formation_url: str):
+        """
+        Watches for a enrollment re-opening in a course.
+        
+        :param self: Description
+        """
+        #Find this <input type="button" value="Demande d'inscription" name="button_1" id="button_1" onclick="_button_1_1()">
+        base_url = "https://adum.fr"
+        if not formation_url.startswith("http"):
+            formation_url = base_url + formation_url
+        response = self.get(formation_url)
+        soup = bs(response.text, "html.parser")
+        name = soup.find("h2").text.strip()
+        button = soup.find("input", {"type": "button", "value": "Demande d'inscription"})
+        if button:
+            return name, True
+        return name, False

@@ -1,6 +1,6 @@
 [project]
 name = "adum"
-version = "0.1.2"
+version = "0.1.3"
 description = "ADUM Python Scrapper"
 readme = "README.md"
 requires-python = ">=3.13"
@@ -9,5 +9,6 @@ dependencies = [
     "dotenv>=0.9.9",
     "gotify>=0.6.0",
     "icalendar>=6.3.2",
+    "pyyaml>=6.0.3",
     "requests>=2.32.5",
 ]
